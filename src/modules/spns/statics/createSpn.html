@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>سرویس های متصل</title>
+
+  <style>
+    .dropbtn {
+      background-color: yellow;
+      color: black;
+      padding: 10px;
+      font-size: 12px;
+    }
+
+    .dropdown {
+      display: inline-block;
+      position: relative
+    }
+
+    .dropdown-content {
+      position: absolute;
+      background-color: lightgrey;
+      min-width: 200px;
+      display: none;
+      z-index: 1;
+    }
+
+    .dropdown-content a {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+    }
+
+    .dropdown-content a:hover {
+      background-color: orange;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown:hover .dropbtn {
+      background-color: grey;
+    }
+
+    .form__group {
+      position: relative;
+      padding: 15px 0 0;
+      margin-top: 10px;
+      width: 50%;
+    }
+
+    .form__field {
+      font-family: inherit;
+      width: 100%;
+      border: 0;
+      border-bottom: 2px solid #9b9b9b;
+      outline: 0;
+      font-size: 1.3rem;
+      color: rgb(29, 27, 27);
+      padding: 7px 0;
+      background: transparent;
+      transition: border-color 0.2s;
+
+      /* &::placeholder {
+        color: transparent;
+      } */
+
+      /* &:placeholder-shown~.form__label {
+        font-size: 1.3rem;
+        cursor: text;
+        top: 20px;
+      } */
+    }
+
+    .form__label {
+      position: absolute;
+      top: 0;
+      display: block;
+      transition: 0.2s;
+      font-size: 1rem;
+      color: #111010;
+    }
+
+    .form__field:focus {
+      /* ~.form__label {
+        position: absolute;
+        top: 0;
+        display: block;
+        transition: 0.2s;
+        font-size: 1rem;
+        color: #11998e;
+        font-weight: 700;
+      } */
+
+      padding-bottom: 6px;
+      font-weight: 700;
+      border-width: 3px;
+      border-image: linear-gradient(to right, #11998e, #38ef7d);
+      border-image-slice: 1;
+    }
+
+    .wave {
+      width: 200px;
+      height: 50px;
+      background-color: #9b9fac;
+      box-shadow: inset 0 0 50px rgba(95, 89, 89, 0.5);
+      /* position: relative; */
+      left: 0;
+      top: 10px;
+      bottom: 10px;
+      transition: 0.4s;
+      font-family: "OpenSans"!important;
+      font-size: 1.5rem;
+      border: none;
+    }
+
+    /* reset input */
+    /* .form__field {
+
+      &:required,
+      &:invalid {
+        box-shadow: none;
+      }
+    } */
+
+    .evType {
+      left: 10px;
+    }
+
+    span {
+      content: "\2190";
+    }
+
+    .arrow-right {
+      width: 0;
+      height: 0;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+      border-right: 30px solid rgb(12, 12, 12);
+      /* position: relative;
+      left: -40%; */
+      cursor: pointer;
+    }
+
+    h2{
+      position: relative;
+      left: -40%;
+    }
+
+    span{
+      display: inline-block!important;
+    }
+
+    /* demo */
+    body {
+      font-family: "OpenSans"!important;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-size: 1.5rem;
+      background-color: #f3efef;
+    }
+  </style>
+
+  <script>
+
+    loadPage = function () {
+      const spnId = sessionStorage.getItem('spnId');
+      const mode = sessionStorage.getItem('mode');
+      if(mode === 'edit' && spnId){
+        console.log(spnId);
+
+        fetch(`/api/spn/${spnId}`, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          method: 'GET'
+        })
+        .then(res => {
+          res.text()
+          .then(data => {
+            data = JSON.parse(data);
+            console.log(data);
+
+            if(data.data){
+              const spn_ = data.data;
+              
+              if(spn_.EV){
+
+                spn_.EV.map(ev => {
+                  document.getElementById(ev).checked = true;
+                });
+
+              }
+
+              document.getElementById('spnNum').value = spn_.spn || '';
+              document.getElementById('spnNum').innerText = spn_.spn || '';
+              document.getElementById('spnName').value = spn_.name || '';
+              document.getElementById('spnName').innerText = spn_.name || '';
+              document.getElementById('description').innerText = spn_.description || '';
+              document.getElementById('topic').value = spn_.topic || '';
+              document.getElementById('source').value = spn_.source || '';
+              document.getElementById('jsonKeyHidden').value = spn_.json_key || '';
+              document.getElementById('dimension').value = spn_.dimenssion || '';
+              document.getElementById('jsonKey').innerText = spn_.json_key || '';
+
+            }
+          })
+        })
+      }
+    }
+
+    sourceSelected = function () {
+      console.log('sourceSelected')
+      let spnNum = document.getElementById('spnNum').value;
+      let sourceNode = document.getElementsByName("source");
+      let sourceValue = '';
+
+      for (var i = 0; i < sourceNode.length; i++) {
+
+        if (sourceNode[i].selected) {
+          sourceValue = sourceNode[i].value;
+        }
+      }
+
+      if (spnNum && spnNum.length > 0) {
+        let jsonKey = spnNum + '_' + sourceValue;
+
+        document.getElementById('jsonKey').textContent = jsonKey;
+        document.getElementById('jsonKeyHidden').value = jsonKey;
+      }
+    }
+
+    submit = async function () {
+
+      var checkedBoxes = document.getElementsByName('EV');//debugger;
+      let topicNode = document.getElementsByName("topic");
+      let sourceNode = document.getElementsByName("source");
+      let jsonKey = document.getElementById('jsonKeyHidden').value;
+      let dimensionNode = document.getElementsByName("dimension");
+      let spnNum = document.getElementById('spnNum').value;
+      let spnName = document.getElementById('spnName').value;
+      let spnDescription = document.getElementById('description').value;
+      let checkBoxValues = [];
+      let topicValue = '';
+      let sourceValue = '';
+
+
+      for (var i = 0; i < checkedBoxes.length; i++) {
+
+        if (checkedBoxes[i].checked) {
+          checkBoxValues.push(checkedBoxes[i].value);
+        }
+      }
+
+      for (var i = 0; i < topicNode.length; i++) {
+
+        if (topicNode[i].selected) {
+          topicValue = topicNode[i].value;
+        }
+      }
+
+      for (var i = 0; i < sourceNode.length; i++) {
+
+        if (sourceNode[i].selected) {
+          sourceValue = sourceNode[i].value;
+        }
+      }
+
+      for (var i = 0; i < dimensionNode.length; i++) {
+
+        if (dimensionNode[i].selected) {
+          dimensionValue = dimensionNode[i].value;
+        }
+      }
+
+      const mode = sessionStorage.getItem('mode');
+      const spnId = sessionStorage.getItem('spnId');
+
+      fetch('/api/spn', {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          id: (mode === 'edit' && spnId) ? spnId : '',
+          EV: checkBoxValues,
+          topic: topicValue,
+          spn: spnNum,
+          name: spnName,
+          description: spnDescription,
+          source: sourceValue,
+          json_key: jsonKey,
+          dimenssion: dimensionValue
+        })
+      }).then(res => {
+
+        if (res.status === 200) {
+          window.location.href = '/api/spn'
+        }
+        console.log(res.text())
+      })
+    }
+
+
+  </script>
+</head>
+
+<body style=" direction:ltr; margin-left: 50px;" onload="loadPage()">
+
+  <h2>
+    <span class="arrow-right" onclick="window.location.href='/api/spn'"></span>
+    <small>Back</small>
+  </h2>
+  
+
+  <!-- <form> -->
+  <!-- <label for="EVDiv" style="float: left;">EV: </label> -->
+  <div class="form__group field" id="EVDiv">
+
+    <input type="checkbox" id="EV" name="EV" value="EV" class="evType" />
+    <label>EV</label> <br>
+
+    <input type="checkbox" id="EBUS" name="EV" value="EBUS" class="evType" />
+    <label>EBUS</label> <br>
+
+    <input type="checkbox" id="EBike" name="EV" value="EBike" class="evType" />
+    <label>EBike</label> <br><br>
+  </div>
+
+  <div class="form__group field">
+    <label for="spnNum">SPN number: </label>
+    <input type="text" name="spnNum" id="spnNum" class="form__field"><br><br>
+  </div>
+
+  <div class="form__group field">
+
+    <label for="spnName">Variable name: </label>
+    <input type="text" name="spnName" id="spnName" class="form__field"><br><br>
+  </div>
+
+  <div class="form__group field">
+
+    <label for="description">Description: </label>
+    <textarea name="description" id="description" class="form__field"></textarea><br><br>
+  </div>
+
+  <div class="form__group field">
+    <label> Topic: </label>
+    <select class="form__field" id="topic">
+      <option value="" disabled selected></option>
+      <option value="signal" name="topic"> Signal
+      </option>
+      <option value="alarm" name="topic"> Alarm
+      </option>
+      <option value="location" name="topic"> Location
+      </option>
+    </select> <br><br>
+  </div>
+
+  <div class="form__group field">
+    <label> Source: </label>
+    <select onchange="sourceSelected()" class="form__field" id="source">
+      <option value="" disabled selected></option>
+      <option value=0 name="source"> GPS
+      </option>
+      <option value=1 name="source"> BMS
+      </option>
+      <option value=2 name="source"> DC DC
+      </option>
+      <option value=3 name="source"> MOTOR
+      </option>
+      <option value=4 name="source"> VCU
+      </option>
+      <option value=5 name="source"> EPS
+      </option>
+    </select> <br><br>
+  </div>
+
+  <div class="form__group field">
+    <label id="jsonKey" class="form__field"></label> <br><br>
+    <input type="hidden" name="jsonKey" id="jsonKeyHidden">
+  </div>
+
+  <div class="form__group field">
+    <label> Dimension: </label>
+    <select class="form__field" id="dimension">
+      <option value="" disabled selected></option>
+      <option value="Decimal degrees (DD)" name="dimension"> Decimal degrees (DD)
+      </option>
+      <option value="State" name="dimension"> State
+      </option>
+      <option value="#" name="dimension"> #
+      </option>
+      <option value="A" name="dimension"> A
+      </option>
+      <option value="kW" name="dimension"> kW
+      </option>
+      <option value="V" name="dimension"> V
+      </option>
+      <option value="%" name="dimension"> %
+      </option>
+      <option value="Ah" name="dimension"> Ah
+      </option>
+      <option value="mΩ" name="dimension"> mΩ
+      </option>
+      <option value="°C" name="dimension"> °C
+      </option>
+      <option value="Nm" name="dimension"> Nm
+      </option>
+      <option value="rpm" name="dimension"> rpm
+      </option>
+      <option value="km" name="dimension"> km
+      </option>
+      <option value="km/h" name="dimension"> km/h
+      </option>
+    </select> <br><br>
+  </div>
+
+  <button onclick=submit() class="wave">submit</button>
+  <!-- </form> -->
+
+</body>
+
+</html>

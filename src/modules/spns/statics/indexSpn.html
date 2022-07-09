@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <title>سرویس های متصل</title>
+
+    <style>
+        .styled-table {
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            font-family: "OpenSans" !important;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+            width: 80%;
+        }
+
+        .styled-table thead tr {
+            background-color: #009879;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .styled-table th,
+        .styled-table td {
+            padding: 12px 15px;
+            text-align: center;
+
+        }
+
+        .styled-table tbody tr {
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .styled-table tbody tr:focus {
+            border-bottom: 1px solid #cef1c5;
+        }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+
+        .styled-table tbody tr.active-row {
+            font-weight: bold;
+            color: #009879;
+        }
+
+        .pointer {
+            cursor: pointer;
+        }
+
+        .wave {
+            width: 200px;
+            height: 50px;
+            background-color: #9b9fac;
+            box-shadow: inset 0 0 50px rgba(95, 89, 89, 0.5);
+            /* position: relative; */
+            left: 0;
+            top: 10px;
+            bottom: 10px;
+            transition: 0.4s;
+            font-family: "OpenSans" !important;
+            font-size: 1.5rem;
+            border: none;
+        }
+
+        .pagination {
+            display: inline-block;
+        }
+
+        .pagination a {
+            color: black;
+            float: left;
+            padding: 8px 16px;
+            text-decoration: none;
+            transition: background-color .3s;
+            border: 1px solid #ddd;
+        }
+
+        .pagination a.active {
+            background-color: #4CAF50;
+            color: white;
+            border: 1px solid #4CAF50;
+        }
+
+        .pagination a:hover:not(.active) {
+            background-color: #ddd;
+        }
+
+        body {
+            text-align: -webkit-center;
+        }
+    </style>
+
+    <script src='https://kit.fontawesome.com/a076d05399.js'></script>
+    <script>
+
+        // const userData = async () => {
+            
+        //     const userDataPromise = fetch(`/api/spn/load`);
+        //     const userEntriesPromise = fetch(`/api/spn/load`);
+
+        //     Promise.all([userDataPromise, userEntriesPromise])
+        //         .then(async (res) => {
+        //             //debugger;
+        //             let tt = await Promise.all(res.map(response => response.text()))
+        //             console.log(tt);
+        //         });
+
+        //     console.log('hello dear')
+        // }
+
+        loadPage = function () {
+
+            fetch('/api/spn/load', {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: 'GET'
+            })
+                .then(res => {
+                    res.text()
+                        .then(data => {
+                            data = JSON.parse(data);
+                            console.log(data);
+
+                            let spnTable = document.getElementById('spnContent');
+
+                            data.map(row => {
+
+                                let new_row = spnTable.insertRow();
+
+                                let new_cell = new_row.insertCell();
+
+                                let ev = '';
+                                row.EV.map(ev_ => {
+                                    ev += ev_;
+                                });
+
+                                new_cell.innerText = row.EV;
+
+                                if (!row.spn) {
+                                    row.spn = '-';
+                                }
+                                new_cell = new_row.insertCell();
+                                new_cell.innerText = row.spn;
+
+                                if (!row.name) {
+                                    row.name = '-';
+                                }
+                                new_cell = new_row.insertCell();
+                                new_cell.innerText = row.name;
+
+                                if (!row.topic) {
+                                    row.topic = '-';
+                                }
+                                new_cell = new_row.insertCell();
+                                new_cell.innerText = row.topic;
+
+                                if (!row.source) {
+                                    row.source = '-';
+                                }
+                                new_cell = new_row.insertCell();
+                                new_cell.innerText = row.source;
+
+                                if (!row.json_key) {
+                                    row.json_key = '-';
+                                }
+                                new_cell = new_row.insertCell();
+                                new_cell.innerText = row.json_key;
+
+                                if (!row.dimenssion) {
+                                    row.dimenssion = '-';
+                                }
+                                new_cell = new_row.insertCell();
+                                new_cell.innerText = row.dimenssion;
+                                new_cell.setAttribute('class', row._id.toString());
+
+                                new_cell = new_row.insertCell();
+
+                                let editLink = document.createElement('i');
+                                //editLink.innerText = 'Edit';
+                                editLink.setAttribute('class', 'fas fa-edit pointer');
+                                editLink.setAttribute('id', row._id.toString());
+                                editLink.addEventListener('click', rowFocusedEdit);
+
+                                let deleteLink = document.createElement('i');
+                                //deleteLink.innerText = 'Delete';
+                                deleteLink.setAttribute('class', 'fas fa-trash pointer');
+                                deleteLink.setAttribute('id', row._id.toString());
+                                deleteLink.addEventListener('click', rowFocusedDelete);
+
+                                new_cell.appendChild(editLink);
+
+                                new_cell = new_row.insertCell();
+                                new_cell.appendChild(deleteLink);
+
+                                spnTable.appendChild(new_row);
+
+                            });
+
+                            //document.querySelector('table > tr').addEventListener('click', rowFocused);
+
+                        });
+                })
+
+        }
+
+        rowFocusedEdit = function (el) {
+            sessionStorage.setItem('spnId', el.target.id);
+            sessionStorage.setItem('mode', 'edit');
+            window.location.href = `/api/spn/createPanel`
+        }
+
+        rowFocusedDelete = function (el) {
+
+            fetch(`/api/spn/${el.target.id}`, {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                method: 'DELETE'
+            })
+                .then(async (res) => {
+
+                    if (res.status === 200) {
+                        window.location.reload(false);
+                    }
+
+                })
+        }
+
+        createNew = function () {
+            sessionStorage.setItem('spnId', '');
+            sessionStorage.setItem('mode', 'new');
+            window.location.href = '/api/spn/createPanel';
+        }
+    </script>
+</head>
+
+<body onload="loadPage()">
+
+    <table id="spnContent" class="styled-table"">
+        <!-- class=" active-row" -->
+        <tr">
+            <th>EV</th>
+            <th>SPN number</th>
+            <th>Variable name</th>
+            <th>Topic</th>
+            <th>Source</th>
+            <th>JSON Key</th>
+            <th>Dimension</th>
+            <!-- <th>
+                <i class='fas fa-edit'></i>
+            </th>
+            <th>
+                <i class='fas fa-trash'></i>
+            </th> -->
+            </tr>
+
+    </table>
+
+    <div class="pagination">
+        <a href="#">❮</a>
+        <a href="#">❯</a>
+    </div>
+
+    <button class="wave" onclick="createNew()">Create Spn</button>
+    <!-- </form> -->
+
+</body>
+
+</html>
