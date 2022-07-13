@@ -1,5 +1,6 @@
 const { reserveDAL } = require('./reserveDAL');
 const agencyService = require('./../agencies/agencyService');
+const { filterClosure } = require('./../../shared/utilities/common');
 
 async function reserveExistance({ year, month, day, timeSection }) {
     const numberOfExistingReserves = await reserveDAL['FIND_BY_DATE'](year, month, day, timeSection);
@@ -88,12 +89,15 @@ async function freeTimesGetByAgencyId({ agencyUniqueId, year, month, day }) {
     return agency;
 }
 
-async function getByAgencyId(agencyId, filter) {
-    
+async function getUserReserves({ userPhone, filters }) {
+    const userReserves = reserveDAL['FIND_BY_PHONE'] ? (await reserveDAL['FIND_BY_PHONE'](userPhone)) : null;
+    const customizedFilter = filterClosure(filters);
+    return userReserves.filter(customizedFilter);
 }
 
 module.exports = {
     reserve,
     freeTimesGet,
-    freeTimesGetByAgencyId
+    freeTimesGetByAgencyId,
+    getUserReserves
 }
