@@ -19,17 +19,25 @@ const reserve = async (req, res) => {
 // }
 
 const freeTimesGet = async (req, res) => {
-    try{
+    try {
         return res.status(200).json(new response(await reserveService.freeTimesGet(req.body)));
-    }catch (error) {
+    } catch (error) {
         return res.status(400).json(new ServerError(error));
     }
 }
 
 const freeTimesGetByAgencyId = async (req, res) => {
-    try{
+    try {
         return res.status(200).json(new response(await reserveService.freeTimesGetByAgencyId(req.body)));
-    }catch (error) {
+    } catch (error) {
+        return res.status(400).json(new ServerError(error));
+    }
+}
+
+const getUserReserves = async (req, res) => {
+    try {
+        return res.status(200).json(new response(req.user ? (await reserveService.getUserReserves({ userPhone: req.user.phone, filters: req.body.filters })) : null));
+    } catch (error) {
         return res.status(400).json(new ServerError(error));
     }
 }
@@ -37,5 +45,6 @@ const freeTimesGetByAgencyId = async (req, res) => {
 module.exports = {
     reserve,
     freeTimesGet,
-    freeTimesGetByAgencyId
+    freeTimesGetByAgencyId,
+    getUserReserves
 }
