@@ -14,6 +14,10 @@ router
 
 router
     .route('/freeTimes/agnecy')
-    .post(reserveController.freeTimesGetByAgencyId)
+    .post(reserveController.freeTimesGetByAgencyId);
+
+router
+    .route('/logs')
+    .post(passport.authenticate("jwt", { session: false }), reserveController.getUserReserves);
 
 module.exports = router;
