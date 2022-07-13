@@ -11,8 +11,6 @@ const insertOrUpdate = async (agency, action) => {
     try {
 
         let new_elem = AGENCY_DAL[action.toUpperCase()] ? await AGENCY_DAL[action.toUpperCase()](agency) : '';
-        const agencies = new_elem ? await CACHE.push('agencies', new_elem) : "";
-
         return Promise.resolve(categorizedGetAll());
     } catch (error) {
         return Promise.reject(error);
@@ -185,6 +183,10 @@ async function deleteAgencyById(id) {
     return Promise.resolve(categorizedGetAll());
 }
 
+async function pieceInsert(agencyId, piece) {
+    return AGENCY_DAL['INSERT_PIECE'] ? AGENCY_DAL['INSERT_PIECE'](agencyId, piece) : {};
+}
+
 module.exports = {
     insertOrUpdate,
     getAll,
@@ -196,5 +198,6 @@ module.exports = {
     setUserPassword,
     assignVehicleToAgency,
     getAssignedVehicles,
-    deleteAgencyById
+    deleteAgencyById,
+    pieceInsert
 }
