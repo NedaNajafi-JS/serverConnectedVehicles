@@ -12,7 +12,8 @@ const reserveSchema = new mongoose.Schema({
         timeSection: Number
     },
     doReserveDate: String,
-    demandedServices: [String]
+    demandedServices: [String],
+    status: Boolean
 });
 
 module.exports = mongoose.model('agencyReserve', reserveSchema);
