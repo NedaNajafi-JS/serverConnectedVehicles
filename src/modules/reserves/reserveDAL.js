@@ -13,6 +13,8 @@ const reserveDispatchTable = {
             })
             .exec(),
 
+    FIND_BY_PHONE: (phone) => RESERVE_MODEL.find({ profilePhone: phone }).lean().exec(),
+
     GET_ALL_BY_DATE: (year, month, day) =>
         RESERVE_MODEL
             .find({
