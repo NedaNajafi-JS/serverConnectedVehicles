@@ -29,7 +29,14 @@ const agencySchema = new mongoose.Schema({
     NumberOfServicePerHour: {
         type: Number,
         default: 10
-    }
+    },
+    pieces: [{
+        name: String,
+        category: String,
+        partNumber: Number,
+        manufacturer: String,
+        description: String
+    }]
     
 });
 
