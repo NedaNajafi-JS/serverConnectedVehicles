@@ -33,4 +33,8 @@ router
     .route('/:id/vehicles')
     .get(agencyController.getAssignedVehicles);
 
+router
+    .route('/pieces')
+    .post(validate('piece'), passport.authenticate("jwt", {session: false}), agencyController.pieceInsert);
+
 module.exports = router;
