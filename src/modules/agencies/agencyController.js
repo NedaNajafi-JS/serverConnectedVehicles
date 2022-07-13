@@ -84,6 +84,16 @@ const deleteAgencyById = async (req, res) => {
     }
 }
 
+const pieceInsert = async (req, res) => {
+    try{
+        // req.user = {};
+        // req.user.id = '629eed52be0e1083435292f2';
+        return res.status(200).json(new response(await agencyService.pieceInsert(req.user.id, req.body)));
+    }catch(error) {
+        return res.status(400).json(new ServerError(error));
+    }
+}
+
 module.exports = {
     insertOrUpdate,
     getAll,
@@ -93,5 +103,6 @@ module.exports = {
     setUserPassword,
     assignVehicleToAgency,
     getAssignedVehicles,
-    deleteAgencyById
+    deleteAgencyById,
+    pieceInsert
 }
