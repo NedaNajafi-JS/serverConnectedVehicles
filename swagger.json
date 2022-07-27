@@ -1,0 +1,801 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "My User Project CRUD",
+    "description": "My User Project Application API",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:5001",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/api/agency": {
+      "get": {
+        "tags": [
+          "agencies"
+        ],
+        "summary": "get all agencies save in the DB",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "params",
+            "description": "user token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "agencies"
+        ],
+        "summary": "insert or update an agency",
+        "parameters": [
+          {
+            "name": "action",
+            "in": "body",
+            "description": "action should be insert or update"
+          },
+          {
+            "name": "uniqueId",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "code",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "name",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "address",
+            "in": "body",
+            "description": "",
+            "schema":{
+              "type": "object",
+              "properties": {
+                "city": {
+                  "type": "string"
+                },
+                "province": {
+                  "type": "string"
+                },
+                "address1": {
+                  "type": "string"
+                },
+                "coordinate": {
+                  "type": "object",
+                  "properties":{
+                    "lat": {
+                      "type": "string"
+                    },
+                    "lon": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name": "phone",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "services",
+            "in": "body",
+            "description": "services provided by the agency"
+          },
+          {
+            "name": "vehicles",
+            "in": "body",
+            "description": "vehicles assigned to the agency"
+          },
+          {
+            "name": "status",
+            "in": "body",
+            "description": "if the agency is active or not"
+          },
+          {
+            "name": "manager",
+            "in": "body",
+            "description": "",
+            "schema": {
+              "type":"object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          }
+        }
+      }
+    },
+    "/api/agency/customized": {
+      "get": {
+        "tags": [
+          "agencies"
+        ],
+        "summary": "get all agencies save in the DB in a customized format",
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          }
+        }
+      }
+    },
+    "/api/agency/{id}": {
+      "get": {
+        "tags": [
+          "agencies"
+        ],
+        "summary": "get an agency",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "agency id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "agencies"
+        ],
+        "summary": "delete an agency",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "agency id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          }
+        }
+      }
+    },
+    "/api/agency/{lat}/{lon}/getNearest": {
+      "get": {
+        "tags": [
+          "agencies"
+        ],
+        "summary": "get an agency",
+        "parameters": [
+          {
+            "name": "lat",
+            "in": "path",
+            "description": "latitude"
+          },
+          {
+            "name": "lon",
+            "in": "path",
+            "description": "longitude"
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          }
+        }
+      }
+    },
+    "/api/agency/setUserPassword": {
+      "post": {
+        "tags": [
+          "agencies"
+        ],
+        "summary": "Admin sets username and password for the agency",
+        "parameters": [
+          {
+            "name": "uniqueId",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "username",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "password",
+            "in": "body",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/agency/vehicles": {
+      "post": {
+        "tags": [
+          "agencies"
+        ],
+        "summary": "Admin assigns vehicles to the agency",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "body",
+            "description": "agency id"
+          },
+          {
+            "name": "vehiclesIdsList",
+            "in": "body",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "array of ids, ids of vehicles"
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/agency/{id}/vehicles": {
+      "post": {
+        "tags": [
+          "agencies"
+        ],
+        "summary": "get vehicles assigned to an agency, with filters. You can filter based on any field in the vehicle document",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "params",
+            "description": "agency id"
+          },
+          {
+            "name": "filters",
+            "in": "body",
+            "schema": {
+              "type": "object"
+            },
+            "description": "an object of any fields in the vehicle document"
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/agency/pieces": {
+      "post": {
+        "tags": [
+          "agencies"
+        ],
+        "summary": "get vehicles assigned to an agency, with filters. You can filter based on any field in the vehicle document",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "params",
+            "description": "agency token"
+          },
+          {
+            "name": "name",
+            "in": "body",
+            "description": "*"
+          },
+          {
+            "name": "category",
+            "in": "body",
+            "description": "A list that should be provided by powertrain team"
+          },
+          {
+            "name": "partNumber",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "manufacturer",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "description",
+            "in": "body",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/profile": {
+      "post": {
+        "tags": [
+          "profile"
+        ],
+        "summary": "handles admins login. Using axios calls an api from mapev.ir to authenticate the admin(userAdmins schema) and recieves a token",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "password",
+            "in": "body",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/reserve": {
+      "post": {
+        "tags": [
+          "reserve"
+        ],
+        "summary": "reserve an agency",
+        "parameters": [
+          {
+            "name": "agencyUniqueId",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "profilePhone",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "reservedDate",
+            "in": "body",
+            "description": "The current time that the user is reserving"
+          },
+          {
+            "name": "doReserveDate",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "parameters": {
+                "year": {
+                  "type": "integer"
+                },
+                "month": {
+                  "type": "integer"
+                },
+                "day": {
+                  "type": "integer"
+                },
+                "timeSection": {
+                  "type": "integer"
+                }
+              }
+            },
+            "description": "The time that the user wants to reserve"
+          },
+          {
+            "name": "demandedServices",
+            "in": "body",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "description": "The services that the customer needs"
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/reserve/freeTimes": {
+      "post": {
+        "tags": [
+          "reserve"
+        ],
+        "summary": "با انتخاب تاریخ، 3 تا از نزدیکتری نمایندگی ها که تایم خالی دارند، برگردانده میشوند",
+        "parameters": [
+          {
+            "name": "year",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "month",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "day",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "lat",
+            "in": "body",
+            "description": "current coordinate latitude"
+          },
+          {
+            "name": "lon",
+            "in": "body",
+            "description": "current coordinate longitude"
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/reserve/freeTimes/agency": {
+      "post": {
+        "tags": [
+          "reserve"
+        ],
+        "summary": "با انتخاب نمایندگی و تاریخ، تاریخ های خالی آن نمایندگی برگردانده میشود",
+        "parameters": [
+          {
+            "name": "agencyUniqueId",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "year",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "month",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "day",
+            "in": "body",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/reserve/logs": {
+      "post": {
+        "tags": [
+          "reserve"
+        ],
+        "summary": "تاریخچه رزروهای کاربر",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "params",
+            "description": "user token"
+          },
+          {
+            "name": "filters",
+            "in": "body",
+            "schema": {
+              "type": "object"
+            },
+            "description": "an object of any fields in the reserve document"
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/config": {
+      "post": {
+        "tags": [
+          "softwareCondigurations"
+        ],
+        "summary": " update software configurations",
+        "parameters": [
+          {
+            "name": "geographic_scale",
+            "in": "body",
+            "description": "تا شعاع چند کیلومتری نمایندگی ها بر روی نقشه نمایش داده شوند"
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "softwareCondigurations"
+        ],
+        "summary": " get software configurations",
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/vehicle": {
+      "post": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": " insert or update vehicles",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "system",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "model",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "capacity",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "charger",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "color",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "engine",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "engine-type",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "VIN",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "profileId",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "car_tag",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "agency",
+            "in": "body",
+            "description": ""
+          },
+          {
+            "name": "coordinate",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "lat": {
+                  "type":"string"
+                },
+                "lon": {
+                  "type":"string"
+                }
+              }
+            },
+            "description": "*"
+          }
+        ],
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": " get all vehicles",
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    },
+    "/api/vehicle/{id}": {
+      "get": {
+        "tags": [
+          "vehicles"
+        ],
+        "summary": " given a vehicle id, returns the vehicle document",
+        "parameters": {
+            "name": "id",
+            "in": "path",
+            "description": ""
+        },
+        "responses": {
+          "200": {
+            "status": "Success"
+          },
+          "400": {
+            "status": "fail"
+          },
+          "401": {
+            "status": "unauthorized"
+          }
+        }
+      }
+    }
+  }
+}
