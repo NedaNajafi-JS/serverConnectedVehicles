@@ -4,7 +4,7 @@ const VEHICLE_DAL = require('./../vehicles/vehicleDAL');
 
 const { CACHE, mapBoxConfig } = require('./../../shared/config/keys');
 
-const { filterClosure } = require('./../../shared/utilities/common');
+const { filterFunction } = require('./../../shared/utilities/common');
 
 const insertOrUpdate = async (agency, action) => {
 
@@ -171,7 +171,7 @@ async function getAssignedVehicles({ id, filters }) {
 
     const { vehicles } = await AGENCY_DAL['GET_VEHICLES'](id);
     const vehiclesObjs = await VEHICLE_DAL['FIND_BY_IDS'](vehicles);
-    let customisedFilter = filterClosure(filters);
+    let customisedFilter = filterFunction(filters);
     return vehiclesObjs.filter(customisedFilter);
 }
 

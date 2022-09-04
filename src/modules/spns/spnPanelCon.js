@@ -9,12 +9,6 @@ exports.indexSpn = (req, res, next) => {
 }
 
 exports.createPanel = (req, res, next) => {
-    // let url = ''
-    // if(req.params.id){
-    //     url = `/statics/createSpn.html?${req.params.id}`
-    // }else{
-    //     url = '/statics/createSpn.html';
-    // }
     res.sendFile(path.dirname(require.main.filename) + '/src/modules/spns/statics/createSpn.html');
 }
 
@@ -26,8 +20,6 @@ exports.fillData = async (req, res, next) => {
     let endIndex = page * limit;
 
     let data = await spnModel.find();
-
-    //data = data.slice(starteIndex, endIndex);
 
     return res.status(200).json(data);
 }

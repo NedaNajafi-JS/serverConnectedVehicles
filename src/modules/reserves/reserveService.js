@@ -1,6 +1,6 @@
 const { reserveDAL } = require('./reserveDAL');
 const agencyService = require('./../agencies/agencyService');
-const { filterClosure } = require('./../../shared/utilities/common');
+const { filterFunction } = require('./../../shared/utilities/common');
 
 async function reserveExistance({ year, month, day, timeSection }) {
     const numberOfExistingReserves = await reserveDAL['FIND_BY_DATE'](year, month, day, timeSection);
@@ -14,6 +14,12 @@ async function reserve(newReserve, user) {
     return reserveExistanceResult === true ? (() => { throw 'Bad request' })() : (reserveDAL['INSERT'] ? reserveDAL['INSERT'](newReserve) : {});
 }
 
+/**
+ * 
+ * @param {Array} distributedData an array of objects tha in needed to be categorized based on key1, key2
+ * @param {any} key1 
+ * @param {any} key2 
+ */
 async function groupingBasedOnTwoKeys(distributedData, key1, key2) {
     let groupedAgencies = [];
     await Promise.all(distributedData.map(distributedObject => {
@@ -45,6 +51,7 @@ const groupByAgencyUniqueId = async (distributedAgencies) => {
     return groupedAgencies;
 }
 
+//returns 3 nearest agencies which have free timespans in the provided date
 async function freeTimesGet({ year, month, day, lat, lon }) {
 
     const distributedAgencies = await reserveDAL['GET_ALL_BY_DATE'](year, month, day);
@@ -79,6 +86,7 @@ async function freeTimesGet({ year, month, day, lat, lon }) {
 
 }
 
+//The user has selected his considered agency from the map
 async function freeTimesGetByAgencyId({ agencyUniqueId, year, month, day }) {
     const agencyAllReservesByDate = await reserveDAL['GET_ALL_BY_DATE_AGENCY'](agencyUniqueId, year, month, day);
     const agency = await agencyService.getByUniqueId(agencyUniqueId);
@@ -89,9 +97,11 @@ async function freeTimesGetByAgencyId({ agencyUniqueId, year, month, day }) {
     return agency;
 }
 
+
+//Reserve history, given a user's phone number
 async function getUserReserves({ userPhone, filters }) {
     const userReserves = reserveDAL['FIND_BY_PHONE'] ? (await reserveDAL['FIND_BY_PHONE'](userPhone)) : null;
-    const customizedFilter = filterClosure(filters);
+    const customizedFilter = filterFunction(filters);
     return userReserves.filter(customizedFilter);
 }
 

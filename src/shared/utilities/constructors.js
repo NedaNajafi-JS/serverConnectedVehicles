@@ -1,3 +1,6 @@
+//To have unifrom responses all over the project and services
+
+
 function response (data)  {
     this.status = 'success',
     this.data = {
@@ -15,8 +18,7 @@ function responseV1 (data)  {
 function ServerError (error) {
     this.status = 'fail',
     this.data = {
-        message: 'خطای سرور',
-        messageEN: 'Server error',
+        message: 'Server error',
         error: error.message
     }
 }
@@ -24,8 +26,7 @@ function ServerError (error) {
 function ParameterError (error) {
     this.status ='fail',
     this.data = {
-        message: 'خطای در پارامترهای ورودی',
-        messageEN: 'Input error',
+        message: 'Input error',
         error: error
     }
 }

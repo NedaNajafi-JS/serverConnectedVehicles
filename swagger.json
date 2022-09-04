@@ -2,13 +2,32 @@
   "swagger": "2.0",
   "info": {
     "version": "1.0.0",
-    "title": "My User Project CRUD",
-    "description": "My User Project Application API",
-    "license": {
-      "name": "MIT",
-      "url": "https://opensource.org/licenses/MIT"
-    }
+    "title": "Server-connected vehicles",
+    "description": "This project serves multiple categories of users: users owning electrical vehicles, dashboard admins and agencies giving different services to the vehicle owners. \n\n Car owners use multiple services provided by mobile application and HMI. \n\n Admins manage both agencies and car owners through a web application. \n\n Agencies, provide both online and in person services to car owners"
   },
+  "tags":[
+    {
+      "name": "agencies",
+      "description": " APIs include:\n\n - activities which admins do for agencies managment\n\n - Online services provided by agencies for car owners\n\n - Activities which agencies do themselves"
+    },
+    {
+      "name": "profile",
+      "description": "Admins and agencies account managment"
+    },
+    {
+      "name": "reserve",
+      "description": "This module provides APIs so that:\n\n - Car users can reserve a timespan in an agencie to have their cars serviced by the agency\n\n - Ucers can find agencies which have free timespans in a specific date\n\n - By selecting an agency from the map, users can see free dates and times provided by the agency"
+    },
+    {
+      "name": "softwareConfigurations",
+      "description": "A module containing APIs setting and getting system configurations, such as geographical scale that is used in the map demonstrating agencies and vehicles\n\n Admin access"
+    },
+    {
+      "name": "vehicles",
+      "description": "Vehicle managment module"
+    }
+  ],
+    
   "host": "localhost:5001",
   "basePath": "/",
   "schemes": [
@@ -26,12 +45,12 @@
         "tags": [
           "agencies"
         ],
-        "summary": "get all agencies save in the DB",
+        "summary": "Get all agencies",
         "parameters": [
           {
             "name": "Authorization",
             "in": "params",
-            "description": "user token"
+            "description": "user access-token"
           }
         ],
         "responses": {
@@ -47,12 +66,12 @@
         "tags": [
           "agencies"
         ],
-        "summary": "insert or update an agency",
+        "summary": "Insert or update an agency",
         "parameters": [
           {
             "name": "action",
             "in": "body",
-            "description": "action should be insert or update"
+            "description": "Should have the value 'insert' or 'update'"
           },
           {
             "name": "uniqueId",
@@ -107,17 +126,17 @@
           {
             "name": "services",
             "in": "body",
-            "description": "services provided by the agency"
+            "description": "An array of services provided by the agency"
           },
           {
             "name": "vehicles",
             "in": "body",
-            "description": "vehicles assigned to the agency"
+            "description": "An array of vehicles assigned to the agency"
           },
           {
             "name": "status",
             "in": "body",
-            "description": "if the agency is active or not"
+            "description": "If the agency is active or not"
           },
           {
             "name": "manager",
@@ -154,7 +173,7 @@
         "tags": [
           "agencies"
         ],
-        "summary": "get all agencies save in the DB in a customized format",
+        "summary": "Get all agencies save in the DB in a customized format",
         "responses": {
           "200": {
             "status": "Success"
@@ -170,7 +189,7 @@
         "tags": [
           "agencies"
         ],
-        "summary": "get an agency",
+        "summary": "Provided id, get an agency",
         "parameters": [
           {
             "name": "id",
@@ -191,7 +210,7 @@
         "tags": [
           "agencies"
         ],
-        "summary": "delete an agency",
+        "summary": "Provided an id, delete the agency",
         "parameters": [
           {
             "name": "id",
@@ -214,7 +233,7 @@
         "tags": [
           "agencies"
         ],
-        "summary": "get an agency",
+        "summary": "Providing geographic coordinate(illustrating vehicle's location) get the nearest agency. \n\n Using Mapbox APIs",
         "parameters": [
           {
             "name": "lat",
@@ -278,7 +297,7 @@
         "tags": [
           "agencies"
         ],
-        "summary": "Admin assigns vehicles to the agency",
+        "summary": "Admin assigns vehicles to an agency",
         "parameters": [
           {
             "name": "id",
@@ -294,7 +313,7 @@
                 "type": "string"
               }
             },
-            "description": "array of ids, ids of vehicles"
+            "description": "array of ids implying vehicles"
           }
         ],
         "responses": {
@@ -315,7 +334,7 @@
         "tags": [
           "agencies"
         ],
-        "summary": "get vehicles assigned to an agency, with filters. You can filter based on any field in the vehicle document",
+        "summary": "Get vehicles assigned to an agency, filtering as available. You can filter based on any field of the vehicle document",
         "parameters": [
           {
             "name": "id",
@@ -328,7 +347,7 @@
             "schema": {
               "type": "object"
             },
-            "description": "an object of any fields in the vehicle document"
+            "description": "Can be ay field of the vehicle document"
           }
         ],
         "responses": {
@@ -349,7 +368,7 @@
         "tags": [
           "agencies"
         ],
-        "summary": "get vehicles assigned to an agency, with filters. You can filter based on any field in the vehicle document",
+        "summary": "Get vehicles assigned to an agency, with filters. You can filter based on any field of the vehicle document",
         "parameters": [
           {
             "name": "Authorization",
@@ -364,7 +383,7 @@
           {
             "name": "category",
             "in": "body",
-            "description": "A list that should be provided by powertrain team"
+            "description": "A pre-defined static list of vehicle categories"
           },
           {
             "name": "partNumber",
@@ -400,7 +419,7 @@
         "tags": [
           "profile"
         ],
-        "summary": "handles admins login. Using axios calls an api from mapev.ir to authenticate the admin(userAdmins schema) and recieves a token",
+        "summary": "handles admins login. Using axios calls an api from authentication service\n\n to authenticate the admin(userAdmins schema) and recieves an access-token",
         "parameters": [
           {
             "name": "username",
@@ -500,7 +519,7 @@
         "tags": [
           "reserve"
         ],
-        "summary": "با انتخاب تاریخ، 3 تا از نزدیکتری نمایندگی ها که تایم خالی دارند، برگردانده میشوند",
+        "summary": "The vehicle owner chooses a date from the calendar, then 3 nearest agencies that have free timespans at the selected date will be returned",
         "parameters": [
           {
             "name": "year",
@@ -546,7 +565,7 @@
         "tags": [
           "reserve"
         ],
-        "summary": "با انتخاب نمایندگی و تاریخ، تاریخ های خالی آن نمایندگی برگردانده میشود",
+        "summary": "Vehicle owner chooses the agency from the map and the date from the calendar, then the timespans during which the selected agency is free will be returned",
         "parameters": [
           {
             "name": "agencyUniqueId",
@@ -587,7 +606,7 @@
         "tags": [
           "reserve"
         ],
-        "summary": "تاریخچه رزروهای کاربر",
+        "summary": "A history of users reserves, both done and waiting reserves",
         "parameters": [
           {
             "name": "Authorization",
@@ -600,7 +619,7 @@
             "schema": {
               "type": "object"
             },
-            "description": "an object of any fields in the reserve document"
+            "description": "Any fields of the reserve document"
           }
         ],
         "responses": {
@@ -619,14 +638,14 @@
     "/api/config": {
       "post": {
         "tags": [
-          "softwareCondigurations"
+          "softwareConfigurations"
         ],
         "summary": " update software configurations",
         "parameters": [
           {
             "name": "geographic_scale",
             "in": "body",
-            "description": "تا شعاع چند کیلومتری نمایندگی ها بر روی نقشه نمایش داده شوند"
+            "description": "This number illustrates the geographic radius(in kilometers) through which the agencies should be visible on the map."
           }
         ],
         "responses": {
@@ -643,7 +662,7 @@
       },
       "get": {
         "tags": [
-          "softwareCondigurations"
+          "softwareConfigurations"
         ],
         "summary": " get software configurations",
         "responses": {
@@ -664,7 +683,7 @@
         "tags": [
           "vehicles"
         ],
-        "summary": " insert or update vehicles",
+        "summary": " insert or update vehicles - Admin access",
         "parameters": [
           {
             "name": "type",
@@ -759,7 +778,7 @@
         "tags": [
           "vehicles"
         ],
-        "summary": " get all vehicles",
+        "summary": " get all vehicles - Admin access",
         "responses": {
           "200": {
             "status": "Success"
@@ -778,7 +797,7 @@
         "tags": [
           "vehicles"
         ],
-        "summary": " given a vehicle id, returns the vehicle document",
+        "summary": " given a vehicle id, returns the vehicle document - Admin access",
         "parameters": {
             "name": "id",
             "in": "path",

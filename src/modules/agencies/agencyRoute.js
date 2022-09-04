@@ -35,6 +35,6 @@ router
 
 router
     .route('/pieces')
-    .post(validate('piece'), passport.authenticate("jwt", {session: false}), agencyController.pieceInsert);
+    .post(/*validate('piece'), */passport.authenticate("jwt", {session: false}), agencyController.pieceInsert);
 
 module.exports = router;

@@ -1,4 +1,4 @@
-.const express = require('express');
+const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -6,8 +6,11 @@ const path = require('path');
 const Https = require('https');
 const fs = require('fs');
 const passport = require('passport');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
-
+require('dotenv').config();
+require('./src/shared/config/passport')(passport);
 require('./src/shared/utilities/onLoadCaching');
 
 const app = express()
@@ -18,7 +21,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(cors());
 app.use(passport.initialize());
-require('./src/shared/config/passport')(passport);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/spn', express.static(path.dirname(require.main.filename) + '/spns/statics'));
 
 const spnAPIs = require('./src/modules/spns/spnPanelRout');
@@ -36,7 +39,7 @@ app.use('/api/reserve', reserveAPIs);
 app.use('/api/profile', profileAPIs);
 
 mongoose
-  .connect(process.env.monoURI, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
+  .connect(process.env.monoURI)
   .then(() => {
 
     console.log('MongoDB Connected');
