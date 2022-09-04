@@ -37,3 +37,6 @@ Most attempts have been made to follow functional programming principles. In thi
     - pure functions<br />
     - recursion<br />
     - one responsibility for each function principle<br />
+<br />
+Swagger documentation<br />
+/api-docs
